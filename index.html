@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Türkçe Karakter Düzeltme</title>
+    <script>
+        const windows_1254 = {
+            0x80: "\u20AC", //€   
+            0x82: "\u201A", //‚
+            0x83: "\u0192", //ƒ
+            0x84: "\u201E", //„
+            0x85: "\u2026", //…
+            0x86: "\u2020", //†
+            0x87: "\u2021", //‡
+            0x88: "\u02C6", //ˆ
+            0x89: "\u2030", //‰
+            0x8a: "\u0160", //Š
+            0x8b: "\u2039", //‹
+            0x8c: "\u0152", //Œ    
+            0x91: "\u2018", //‘
+            0x92: "\u2019", //’
+            0x93: "\u201C", //“
+            0x94: "\u201D", //”
+            0x95: "\u2022", //•
+            0x96: "\u2013", //–
+            0x97: "\u2014", //—
+            0x98: "\u02DC", //˜
+            0x99: "\u2122", //™
+            0x9a: "\u0161", //š
+            0x9b: "\u203A", //›
+            0x9c: "\u0153", //œ    
+            0x9f: "\u0178", //Ÿ
+            0xd0: "\u011E", //Ğ
+            0xdd: "\u0130", //İ
+            0xde: "\u015E", //Ş
+            0xf0: "\u011F", //ğ
+            0xfd: "\u0131", //ı
+            0xfe: "\u015F", //ş
+        }
+
+        function convert(input) {
+            let output = input.replaceAll(/\\'[0-9a-fA-F]{2}/gm, (c) => {
+                return String.fromCharCode(Number(c.replace("\\'", "0x")))
+            })
+
+            output = output.replaceAll(/\\par/gm, "\r\n")
+
+            let array = output.split("")
+
+            return array.map(c => {
+                let char = windows_1254[c.codePointAt()]
+                if (!char) {
+                    return c
+                }
+                return char
+            }).join("")
+        }
+
+        window.addEventListener("load", _ => {
+            let inputTextArea = document.getElementById("input")
+            let outputTextArea = document.getElementById("output")
+
+            inputTextArea.addEventListener("input", event => {
+                let inputValue = event.target.value
+
+                let outputValue = convert(inputValue)
+
+                outputTextArea.value = outputValue
+            })
+        })
+
+    </script>
+
+    <style>
+        html {
+            height: 100%;
+            margin: 0
+        }
+
+        body {
+            display: flex;
+            gap: 5px;
+            height: calc(100% - 50px);
+            margin: 25px;
+        }
+
+        textarea {
+            width: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <textarea id="input"></textarea>
+    <textarea id="output" disabled></textarea>
+</body>
+
+</html>
